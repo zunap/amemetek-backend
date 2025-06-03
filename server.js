@@ -14,9 +14,15 @@ app.get('/coin', (req, res) => {
 
 // Serve /ca from /public/ca.html
 app.get('/ca', (req, res) => {
-  console.log('🔗 GET /ca triggered with:', req.query)
-  res.sendFile(path.resolve(__dirname, 'public', 'ca.html'))
+  console.log("➡️ /ca route hit with:", req.query.ca)
+  res.sendFile(path.join(__dirname, 'public', 'ca.html'), (err) => {
+    if (err) {
+      console.error("❌ Error sending ca.html:", err)
+      res.status(500).send("Server error loading CA page")
+    }
+  })
 })
+
 
 // Optional API endpoint for coin creation
 app.post('/api/create-coin', (req, res) => {
