@@ -14,7 +14,8 @@ app.get('/coin', (req, res) => {
 
 // Serve /ca from /public/ca.html
 app.get('/ca', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/ca.html'))
+  console.log('🔗 GET /ca triggered with:', req.query)
+  res.sendFile(path.resolve(__dirname, 'public', 'ca.html'))
 })
 
 // Optional API endpoint for coin creation
