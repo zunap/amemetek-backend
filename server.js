@@ -5,13 +5,8 @@ const path = require('path')
 
 app.use(cors())
 app.use(express.json())
-app.use(express.static(path.join(__dirname, 'public')))
 
-// Serve /coin from /public/coin/coin.html
-app.use('/coin', express.static(path.join(__dirname, 'public/coin')))
-
-
-// Serve /ca from /public/ca.html
+// 👇 Define /ca first so it's not shadowed by static
 app.get('/ca', (req, res) => {
   const filePath = path.join(__dirname, 'public', 'ca.html')
   console.log('🔍 Serving file:', filePath)
@@ -24,9 +19,12 @@ app.get('/ca', (req, res) => {
   })
 })
 
+// Then serve /coin as a static folder
+app.use('/coin', express.static(path.join(__dirname, 'public/coin')))
 
+// Lastly, serve general static files like images/css
+app.use(express.static(path.join(__dirname, 'public')))
 
-// Optional API endpoint for coin creation
 app.post('/api/create-coin', (req, res) => {
   const { ca, name, ticker, image, apiKey, server } = req.body
   console.log('Coin Creation Request:', req.body)
