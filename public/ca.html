@@ -1,0 +1,47 @@
+<!-- public/ca.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vamp a Coin</title>
+</head>
+<body style="background: #111; color: white; font-family: sans-serif; padding: 24px;">
+  <h1>Vamp a Coin</h1>
+  <p>Waiting for initData...</p>
+
+  <script>
+    function getQueryParam(name) {
+      const url = new URL(window.location.href)
+      return url.searchParams.get(name)
+    }
+
+    const ca = getQueryParam('ca')
+
+    window.addEventListener('message', (e) => {
+      if (e.data.type === 'initData') {
+        const { apiKey, server } = e.data.payload
+        console.log('🧠 initData received for CA:', ca)
+
+        fetch('/api/create-coin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ca,
+            name: 'VampCoin',
+            ticker: 'VAMP',
+            image: '',
+            apiKey,
+            server
+          })
+        })
+        .then(res => res.json())
+        .then(json => {
+          alert(`✅ API Response: ${json.message}`)
+          parent.postMessage({ type: 'close' }, '*')
+        })
+      }
+    })
+
+    window.parent.postMessage({ type: 'ready' }, '*')
+  </script>
+</body>
+</html>

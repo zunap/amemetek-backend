@@ -1,0 +1,40 @@
+<!-- public/coin.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Coin</title>
+</head>
+<body style="background: #111; color: white; font-family: sans-serif; padding: 24px;">
+  <h1>Create a Coin</h1>
+  <p>Waiting for initData...</p>
+
+  <script>
+    window.addEventListener('message', (e) => {
+      if (e.data.type === 'initData') {
+        const { apiKey, server } = e.data.payload
+        console.log('🧠 initData received:', e.data.payload)
+
+        fetch('/api/create-coin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ca: 'N/A',
+            name: 'MyTestCoin',
+            ticker: 'TEST',
+            image: '',
+            apiKey,
+            server
+          })
+        })
+        .then(res => res.json())
+        .then(json => {
+          alert(`✅ API Response: ${json.message}`)
+          parent.postMessage({ type: 'close' }, '*')
+        })
+      }
+    })
+
+    window.parent.postMessage({ type: 'ready' }, '*')
+  </script>
+</body>
+</html>
